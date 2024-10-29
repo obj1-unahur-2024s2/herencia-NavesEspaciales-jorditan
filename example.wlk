@@ -53,6 +53,15 @@ class Nave {
   
   method estaDeRelajo()=
     self.estaTranquila()
+  
+  method recibirAmenaza() {
+    self.escapar();
+    self.avisar()
+  }
+  
+  method escapar() {}
+  
+  method avisar() {}
 }
 
 class NaveDeBaliza inherits Nave {
@@ -83,10 +92,14 @@ class NaveDeBaliza inherits Nave {
   override method condicionAdicionalDeTranquilidad()=
     baliza != 'verde'
 
-  method recibirAmenaza() {
+  override method escapar() {
     self.irHaciaElSol();
+  }
+
+  override method avisar() {
     self.cambiarColorDeBaliza('rojo')
   }
+  
 
   override method estaDeRelajo()=
     super() and self.cambioColor()
@@ -127,8 +140,11 @@ class NaveDePasajeros inherits Nave {
     self.acecarcarseUnPocoAlSol()
   }
 
-  method recibirAmenaza() {
-    self.acelerar(self.velocidad() * 2)
+  override method escapar() {
+    self.acelerar(velocidad)
+  }
+
+  override method avisar(){
     self.descargarComida(racionesComida - pasajeros)
     self.descargarBebida(racionesBebida - (pasajeros*2))
   }
@@ -208,9 +224,12 @@ class NaveDeCombate inherits Nave {
   override method condicionAdicionalDeTranquilidad()=
     !self.misiblesDesplegados()
   
-  method recibirAmenaza() {
+  override method escapar() {
     self.acecarcarseUnPocoAlSol()
     self.acecarcarseUnPocoAlSol()
+  }
+
+  override method avisar() {
     self.emitioMensaje('Amenaza recibida')
   }
 }
@@ -218,12 +237,12 @@ class NaveDeCombate inherits Nave {
 class NaveHospital inherits NaveDePasajeros {
   var quirofanosPreparados = false 
 
-  method prepararQuirofano() {
+  method prepararQuirofano() { 
     quirofanosPreparados = true
   }
 
   override method condicionAdicionalDeTranquilidad()=
-    quirofanosPreparados
+    !quirofanosPreparados
   
   override method recibirAmenaza() {
     super();
